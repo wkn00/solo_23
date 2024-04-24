@@ -2,8 +2,7 @@
 #include <libc/stdint.h>
 #include <pic.h>
 
-void init_keyboard_input();
-void init_timer();
+void KEYBOARD_Initialize();
 void write_text(const char* str, unsigned char color);
 
 #define ISR0 0 // Division by zero exception

@@ -114,24 +114,13 @@ void keyboard_handler(Registers* regs) {
     }
 }
 
-void init_keyboard_input() {
+void KEYBOARD_Initialize() {
     // Register the keyboard handler for interrupt 33
     ISR_RegisterHandler(33, keyboard_handler);
 }
 
-
 // This code here will run when the timer ticks. frequency is defined in init_timer()
 void timer_handler(Registers* regs) {
-}
-
-void init_timer() {
-    // Register the keyboard handler for interrupt 33
-    ISR_RegisterHandler(32, timer_handler);
-    int frequency = 20;
-    int divisor = 1193180 / frequency;
-    outb(0x43, 0x36);
-    outb(0x40, divisor);
-    outb(0x40, divisor >> 8);
 }
 
 void write_text(const char* str, unsigned char color) {

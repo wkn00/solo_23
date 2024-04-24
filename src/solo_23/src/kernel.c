@@ -7,6 +7,10 @@
 #include <io.h>
 #include <pic.h>
 #include <keyboard.h>
+#include <memory.h>
+#include <pit.h>
+
+extern uint32_t end; 
 
 struct multiboot_info {
     uint32_t size;
@@ -17,38 +21,37 @@ struct multiboot_info {
 int kernel_main();
 
 
-
 int main(uint32_t magic, struct multiboot_info* mb_info_addr) {
-    printf("Starting kernel initialization...\n");
     
-    printf("Initializing GDT...\n");
     // GDT
     GDT_Initialize();
 
-    printf("Remapping PIC...\n");
+    // PIC
     PIC_remap(0x20, 0x28);
 
-    printf("Initializing IDT...\n");
     // IDT
     IDT_Initialize();
 
-    printf("Initializing ISR...\n");
     // ISR
     ISR_Initialize();
 
-    printf("Enabling keyboard interrupt...\n");
-
+    // IRQ
     IRQ_clear_mask(1); 
 
-    printf("System initialization complete.\n Hello World!\n");
+    // PIT
+    PIT_Initialize();       
 
-    //Keyboard
-    init_timer();
-    init_keyboard_input();
-    asm volatile ("sti"); // Enable interrupts like PIT timer, keyboard etc.
-    clrscr(); // Clear the screen
+    // Keyboard
+    KEYBOARD_Initialize();
 
-    printf("wael_os> "); 
+    // Enable interrupts
+    asm volatile ("sti"); 
+
+    // Memory
+    init_kernel_memory(&end);      
+
+    // Paging
+    Paging_Initialize();   
 
     return kernel_main();
 }
